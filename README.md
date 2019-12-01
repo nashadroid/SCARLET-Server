@@ -1,6 +1,4 @@
-Simple Python Web Server
+SCARLET Python Webserver
 ========================
 
-This is the source code for howCode's simple Python Web Server.
-
-You can watch the video that accompanies this source code here: https://youtu.be/hFNZ6kdBgO0
+A simple web server to transfer objects between machines in the lab
