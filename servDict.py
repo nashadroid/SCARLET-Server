@@ -2,6 +2,11 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import logging
 
+
+#TO DO
+#Return 404
+#Image Host
+
 infoStored = {"Placeholder Key":"Placeholder Value"}
 
 class Serv(BaseHTTPRequestHandler):
@@ -41,6 +46,8 @@ class Serv(BaseHTTPRequestHandler):
 
         global infoStored
 
+        print(self.path[1:])
+
         content_length = int(self.headers['Content-Length'])  # Gets the size of data
         self.post_data = self.rfile.read(content_length)  # Gets the data itself
 
@@ -48,7 +55,9 @@ class Serv(BaseHTTPRequestHandler):
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
         print(self.post_data.decode('ascii'))
-        infoStored.update(json.loads(self.post_data.decode('ascii')))
+        sentInfoDict = json.loads(self.post_data.decode('ascii'))
+        #if(sentInfoDict.
+        infoStored.update(sentInfoDict)
 
 
 httpd = HTTPServer(('', 8080), Serv)
