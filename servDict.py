@@ -8,7 +8,7 @@ import logging
 #Return 404
 #Image Host
 
-infoStored = {"Placeholder Key":"Placeholder Value"}
+infoStored = {"Placeholder_Key":"Placeholder_Value"}
 
 class Serv(BaseHTTPRequestHandler):
 
@@ -22,7 +22,7 @@ class Serv(BaseHTTPRequestHandler):
 
         global infoStored
 
-        #print(self.path[:8])
+        print(self.path[:9])
 
         if self.path == '/':
             self.path = '/index.html'
@@ -35,10 +35,10 @@ class Serv(BaseHTTPRequestHandler):
         if self.path == '/index.html':
             self.end_headers()
             self.wfile.write(bytes(json.dumps(infoStored), 'utf-8'))
-        elif (self.path.lower().endswith((".png",".jpg",".tiff",".jpeg",".gif",".txt"))):
+        elif (self.path[:6] == "/files"):
             try:
-                print("pictures!")
-                f = open(self.path[1:], 'rb')
+                print("files!")
+                f = open(self.path[7:], 'rb')
                 self.send_response(200)
 
                 filename, file_extension = os.path.splitext(self.path)
@@ -51,18 +51,15 @@ class Serv(BaseHTTPRequestHandler):
             except:
                 file_to_open = "File not found or image cannot be read"
                 self.send_response(404)
-        elif (self.path[:5] == "/text"):
-            print("text!")
+        elif (self.path[:9] == "/textdata"):
+            print("Text Data!")
             try:
-                file_to_open = open(self.path[1:]).read()
-                print("file read in")
-                self.send_response(200)
+                requestedKey = self.path[10:]
+                requestedVal = infoStored[requestedKey]
             except:
-                file_to_open = "File not found"
-                self.send_response(404)
+                requestedVal = "NO VALUE STORED"
             self.end_headers()
-            self.wfile.write(bytes(file_to_open, 'utf-8'))
-
+            self.wfile.write(bytes(json.dumps(requestedVal), 'utf-8'))
         else:
 
             try:
