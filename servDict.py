@@ -1,5 +1,6 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
+import os
 import logging
 
 
@@ -21,6 +22,8 @@ class Serv(BaseHTTPRequestHandler):
 
         global infoStored
 
+        #print(self.path[:8])
+
         if self.path == '/':
             self.path = '/index.html'
 
@@ -32,6 +35,34 @@ class Serv(BaseHTTPRequestHandler):
         if self.path == '/index.html':
             self.end_headers()
             self.wfile.write(bytes(json.dumps(infoStored), 'utf-8'))
+        elif (self.path.lower().endswith((".png",".jpg",".tiff",".jpeg",".gif",".txt"))):
+            try:
+                print("pictures!")
+                f = open(self.path[1:], 'rb')
+                self.send_response(200)
+
+                filename, file_extension = os.path.splitext(self.path)
+
+                self.send_header('Content-type', (file_extension[1:]))
+                self.end_headers()
+                self.wfile.write(f.read())
+                f.close()
+                return
+            except:
+                file_to_open = "File not found or image cannot be read"
+                self.send_response(404)
+        elif (self.path[:5] == "/text"):
+            print("text!")
+            try:
+                file_to_open = open(self.path[1:]).read()
+                print("file read in")
+                self.send_response(200)
+            except:
+                file_to_open = "File not found"
+                self.send_response(404)
+            self.end_headers()
+            self.wfile.write(bytes(file_to_open, 'utf-8'))
+
         else:
 
             try:
@@ -54,10 +85,14 @@ class Serv(BaseHTTPRequestHandler):
         self._set_response()
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
-        print(self.post_data.decode('ascii'))
-        sentInfoDict = json.loads(self.post_data.decode('ascii'))
-        #if(sentInfoDict.
-        infoStored.update(sentInfoDict)
+        if self.path.lower().startswith("/postpictures"):
+            print("reading in picture")
+
+        else:
+            print(self.post_data.decode('ascii'))
+            sentInfoDict = json.loads(self.post_data.decode('ascii'))
+
+            infoStored.update(sentInfoDict)
 
 
 httpd = HTTPServer(('', 8080), Serv)
