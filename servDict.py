@@ -102,21 +102,28 @@ class Serv(BaseHTTPRequestHandler):
         print(self.path)
         print(filename)
 
+        if not self.path.startswith("/pictures" or "/files"):
+            print("Inv Loc")
+            self.send_response(409, 'Invalid Location')
+            reply_body = ' Invalid Location\n'
+            self.wfile.write(reply_body.encode('utf-8'))
+            return
+
         # Don't overwrite files
-        if os.path.exists(filename) and not overWriteFiles:
+        if os.path.exists(self.path[1:]) and not overWriteFiles:
             self.send_response(409, 'Conflict')
             self.end_headers()
-            reply_body = "\""+filename + "\""+ ' already exists and overwriting is forbidden\n'
+            reply_body = "\""+ self.path[1:] + "\""+ ' already exists and overwriting is forbidden\n'
             self.wfile.write(reply_body.encode('utf-8'))
             return
 
         else:
             file_length = int(self.headers['Content-Length'])
-            with open(filename, 'wb') as output_file:
+            with open(self.path[1:], 'wb') as output_file:
                 output_file.write(self.rfile.read(file_length))
             self.send_response(201, 'Created')
             self.end_headers()
-            reply_body = 'Saved "%s"\n' % filename
+            reply_body = 'Saved '+ self.path[1:] +"\n"
             self.wfile.write(reply_body.encode('utf-8'))
 
 
