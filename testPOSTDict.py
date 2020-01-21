@@ -7,4 +7,4 @@ inVal = input("Value: ")
 SendDict = {inKey:inVal}
 j = json.dumps(SendDict)
 
-requests.post('http://localhost:8080/', data=j)
+requests.post('http://10.89.10.106:8080/', data=j)

@@ -1,6 +1,9 @@
+#Copyright 2019-2020 Nashad Rahman
+
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import os
+import ast
 import logging
 
 
@@ -9,6 +12,7 @@ import logging
 #Image Host
 
 infoStored = {"Placeholder_Key":"Placeholder_Value"}
+overWriteFiles = False
 
 class Serv(BaseHTTPRequestHandler):
 
@@ -20,46 +24,52 @@ class Serv(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        global infoStored
+        global infoStored #Calls in global dictionary to retrieved saved info
 
-        print(self.path[:9])
+        #print(self.path[:9])
 
         if self.path == '/':
-            self.path = '/index.html'
+            self.path = '/index.html' # Changes to index if on homepage (will be used once homepage built)
 
-        try:
-            self.send_response(200)
-        except:
-            self.send_response(404)
-
-        if self.path == '/index.html':
+        if self.path == '/index.html': # Returns all stored info if homepage
             self.end_headers()
             self.wfile.write(bytes(json.dumps(infoStored), 'utf-8'))
-        elif (self.path[:6] == "/files"):
+
+        # FILES
+        elif (self.path[:6] == "/files"): # Only executes if URL path starts with files
             try:
-                print("files!")
-                f = open(self.path[7:], 'rb')
-                self.send_response(200)
 
-                filename, file_extension = os.path.splitext(self.path)
+                f = open(self.path[7:], 'rb') # Reads the specified file in as binary
+                self.send_response(200) # LATER This should be down
 
-                self.send_header('Content-type', (file_extension[1:]))
+                filename, file_extension = os.path.splitext(self.path) # Extracts extension to send header
+
+                self.send_header('Content-type', (file_extension[1:])) # Sends Header of file extension
                 self.end_headers()
-                self.wfile.write(f.read())
+
+                self.wfile.write(f.read()) #Sends image
                 f.close()
                 return
+
             except:
+
                 file_to_open = "File not found or image cannot be read"
                 self.send_response(404)
+
+        # TEXT
         elif (self.path[:9] == "/textdata"):
-            print("Text Data!")
+
+            # Checks and returns value for corresponding key requested
             try:
                 requestedKey = self.path[10:]
                 requestedVal = infoStored[requestedKey]
+
             except:
-                requestedVal = "NO VALUE STORED"
+                requestedVal = "NO VALUE STORED" # Returns No Value Stored if the key does not exist
+
             self.end_headers()
-            self.wfile.write(bytes(json.dumps(requestedVal), 'utf-8'))
+            self.wfile.write(bytes(json.dumps(requestedVal), 'utf-8')) #Returns Binary Version of String
+
         else:
 
             try:
@@ -82,14 +92,32 @@ class Serv(BaseHTTPRequestHandler):
         self._set_response()
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
-        if self.path.lower().startswith("/postpictures"):
-            print("reading in picture")
+        print(self.post_data.decode('ascii'))
+        sentInfoDict = json.loads(self.post_data.decode('ascii'))
+
+        infoStored.update(sentInfoDict)
+
+    def do_PUT(self):
+        filename = os.path.basename(self.path)
+        print(self.path)
+        print(filename)
+
+        # Don't overwrite files
+        if os.path.exists(filename) and not overWriteFiles:
+            self.send_response(409, 'Conflict')
+            self.end_headers()
+            reply_body = "\""+filename + "\""+ ' already exists and overwriting is forbidden\n'
+            self.wfile.write(reply_body.encode('utf-8'))
+            return
 
         else:
-            print(self.post_data.decode('ascii'))
-            sentInfoDict = json.loads(self.post_data.decode('ascii'))
-
-            infoStored.update(sentInfoDict)
+            file_length = int(self.headers['Content-Length'])
+            with open(filename, 'wb') as output_file:
+                output_file.write(self.rfile.read(file_length))
+            self.send_response(201, 'Created')
+            self.end_headers()
+            reply_body = 'Saved "%s"\n' % filename
+            self.wfile.write(reply_body.encode('utf-8'))
 
 
 httpd = HTTPServer(('', 8080), Serv)
