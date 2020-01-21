@@ -31,6 +31,11 @@ class Serv(BaseHTTPRequestHandler):
         if self.path == '/':
             self.path = '/index.html' # Changes to index if on homepage (will be used once homepage built)
 
+        try:
+            self.send_response(200)
+        except:
+            self.send_response(404)
+
         if self.path == '/index.html': # Returns all stored info if homepage
             self.end_headers()
             self.wfile.write(bytes(json.dumps(infoStored), 'utf-8'))
