@@ -3,6 +3,7 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import os
+from datetime import datetime
 import ast
 import logging
 
@@ -52,7 +53,7 @@ class Serv(BaseHTTPRequestHandler):
                 self.send_header('Content-type', (file_extension[1:])) # Sends Header of file extension
                 self.end_headers()
 
-                self.wfile.write(f.read()) #Sends image
+                self.wfile.write(f.read()) #Sends file
                 f.close()
                 return
 
@@ -101,6 +102,12 @@ class Serv(BaseHTTPRequestHandler):
         sentInfoDict = json.loads(self.post_data.decode('ascii'))
 
         infoStored.update(sentInfoDict)
+
+        for key in sentInfoDict:
+            sentInfoDictTime = {key+"_time": str(datetime.now())}
+            infoStored.update(sentInfoDictTime)
+
+
 
     def do_PUT(self):
         filename = os.path.basename(self.path)
