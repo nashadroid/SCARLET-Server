@@ -4,16 +4,16 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 import ast
 import logging
 
 
 #TO DO
-#Return 404
-#Image Host
 
 infoStored = {"Placeholder_Key":"Placeholder_Value"}
 overWriteFiles = False
+sortFilesByDay = False
 
 class Serv(BaseHTTPRequestHandler):
 
@@ -102,6 +102,16 @@ class Serv(BaseHTTPRequestHandler):
         sentInfoDict = json.loads(self.post_data.decode('ascii'))
 
         infoStored.update(sentInfoDict)
+
+
+        try:
+            print("log/" + str(datetime.now().date()) + ".txt")
+            with open("log/"+str(datetime.now().date())+".txt", "a+") as logfile:
+                print("Write")
+                logfile.write(str(datetime.now().time())+"\t"+str(sentInfoDict))
+                print("Wrote")
+        except:
+            Path("log/" + str(datetime.now().date())).mkdir(parents=True, exist_ok=True)
 
         for key in sentInfoDict:
             sentInfoDictTime = {key+"_time": str(datetime.now())}
