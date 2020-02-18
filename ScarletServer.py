@@ -11,7 +11,7 @@ import logging
 
 #TO DO
 
-infoStored = {"Placeholder_Key":"Placeholder_Value"}
+infoStored = {"Placeholder_Key": "Placeholder_Value"}
 overWriteFiles = False
 sortFilesByDay = False
 
@@ -42,10 +42,10 @@ class Serv(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(infoStored), 'utf-8'))
 
         # FILES
-        elif (self.path[:6] == "/files"): # Only executes if URL path starts with files
+        elif self.path.startswith("/files"): # Only executes if URL path starts with files
             try:
 
-                f = open(self.path[7:], 'rb') # Reads the specified file in as binary
+                f = open(self.path[1:], 'rb') # Reads the specified file in as binary
                 self.send_response(200) # LATER This should be down
 
                 filename, file_extension = os.path.splitext(self.path) # Extracts extension to send header
@@ -63,7 +63,7 @@ class Serv(BaseHTTPRequestHandler):
                 self.send_response(404)
 
         # TEXT
-        elif (self.path[:9] == "/textdata"):
+        elif self.path.startswith("/textdata"):
 
             # Checks and returns value for corresponding key requested
             try:
