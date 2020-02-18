@@ -105,13 +105,15 @@ class Serv(BaseHTTPRequestHandler):
 
 
         try:
-            print("log/" + str(datetime.now().date()) + ".txt")
             with open("log/"+str(datetime.now().date())+".txt", "a+") as logfile:
-                print("Write")
                 logfile.write(str(datetime.now().time())+"\t"+str(sentInfoDict))
-                print("Wrote")
         except:
             Path("log/" + str(datetime.now().date())).mkdir(parents=True, exist_ok=True)
+            try:
+                with open("log/" + str(datetime.now().date()) + ".txt", "a+") as logfile:
+                    logfile.write(str(datetime.now().time()) + "\t" + str(sentInfoDict))
+            except:
+                print("Error Saving Data to Log File")
 
         for key in sentInfoDict:
             sentInfoDictTime = {key+"_time": str(datetime.now())}
@@ -120,33 +122,58 @@ class Serv(BaseHTTPRequestHandler):
 
 
     def do_PUT(self):
-        filename = os.path.basename(self.path)
+        filename = self.path
         print(self.path)
         print(filename)
+        reply_body = ""
 
-        if not self.path.startswith("/pictures" or "/files"):
-            print("Inv Loc")
-            self.send_response(409, 'Invalid Location')
-            reply_body = ' Invalid Location\n'
-            self.wfile.write(reply_body.encode('utf-8'))
-            return
+        saveLocation=self.path[1:]
+
+        if not saveLocation.startswith("files"):
+            saveLocation=os.path.join("files",saveLocation)
+            print("Added /files to path")
+            print(saveLocation)
+            self.send_response(409, 'Added /files to path') # I forget what this does
+            reply_body += '\nSERVER: Added /files to path'
+
+
+        file_length = int(self.headers['Content-Length'])
+
+        if sortFilesByDay:
+            saveLocation = saveLocation[:6] + str(datetime.now().date()) + "/" + saveLocation[6:]
+            reply_body += '\nSERVER: Added date to path automatically'
+
+        print(saveLocation)
 
         # Don't overwrite files
-        if os.path.exists(self.path[1:]) and not overWriteFiles:
+        if os.path.exists(saveLocation) and not overWriteFiles:
             self.send_response(409, 'Conflict')
             self.end_headers()
-            reply_body = "\""+ self.path[1:] + "\""+ ' already exists and overwriting is forbidden\n'
+            reply_body += "\nSERVER: Error: \"" + saveLocation + "\"" + ' already exists and overwriting is forbidden\n'
             self.wfile.write(reply_body.encode('utf-8'))
             return
 
-        else:
-            file_length = int(self.headers['Content-Length'])
-            with open(self.path[1:], 'wb') as output_file:
+        # Try Saving File Without checking directory exists
+        try:
+            with open(saveLocation, 'wb') as output_file:
                 output_file.write(self.rfile.read(file_length))
-            self.send_response(201, 'Created')
-            self.end_headers()
-            reply_body = 'Saved '+ self.path[1:] +"\n"
-            self.wfile.write(reply_body.encode('utf-8'))
+                reply_body = saveLocation
+
+        except:
+
+            # Make directory if it fails
+            os.makedirs(os.path.dirname(saveLocation))
+            try:
+                with open(saveLocation, 'wb') as output_file:
+                    output_file.write(self.rfile.read(file_length))
+                    reply_body = saveLocation
+            except:
+                # this should never be reached
+                print("Error Finding and Making Directory")
+
+        self.send_response(201, 'Created')
+        self.end_headers()
+        self.wfile.write(reply_body.encode('utf-8'))
 
 
 httpd = HTTPServer(('', 8080), Serv)
