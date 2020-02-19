@@ -1,4 +1,5 @@
-#Copyright 2019-2020 Nashad Rahman
+# Copyright 2019-2020 Nashad Rahman
+# I apologize in advance for the magic numbers
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
@@ -9,11 +10,12 @@ import ast
 import logging
 
 
-#TO DO
+# TO DO
 
 infoStored = {"Placeholder_Key": "Placeholder_Value"}
 overWriteFiles = False
 sortFilesByDay = False
+
 
 class Serv(BaseHTTPRequestHandler):
 
@@ -25,9 +27,9 @@ class Serv(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        global infoStored #Calls in global dictionary to retrieved saved info
+        global infoStored # Calls in global dictionary to retrieved saved info
 
-        #print(self.path[:9])
+        # print(self.path[:9])
 
         if self.path == '/':
             self.path = '/index.html' # Changes to index if on homepage (will be used once homepage built)
@@ -71,7 +73,7 @@ class Serv(BaseHTTPRequestHandler):
                 requestedVal = infoStored[requestedKey]
 
             except:
-                requestedVal = "NO VALUE STORED" # Returns No Value Stored if the key does not exist
+                requestedVal = "NO VALUE STORED" # Returns "No Value Stored" if the key does not exist
 
             self.end_headers()
             self.wfile.write(bytes(json.dumps(requestedVal), 'utf-8')) #Returns Binary Version of String
@@ -122,9 +124,6 @@ class Serv(BaseHTTPRequestHandler):
 
 
     def do_PUT(self):
-        filename = self.path
-        print(self.path)
-        print(filename)
         reply_body = ""
 
         saveLocation=self.path[1:]
@@ -132,7 +131,6 @@ class Serv(BaseHTTPRequestHandler):
         if not saveLocation.startswith("files"):
             saveLocation=os.path.join("files",saveLocation)
             print("Added /files to path")
-            print(saveLocation)
             self.send_response(409, 'Added /files to path') # I forget what this does
             reply_body += '\nSERVER: Added /files to path'
 
@@ -143,14 +141,16 @@ class Serv(BaseHTTPRequestHandler):
             saveLocation = saveLocation[:6] + str(datetime.now().date()) + "/" + saveLocation[6:]
             reply_body += '\nSERVER: Added date to path automatically'
 
-        print(saveLocation)
 
         # Don't overwrite files
         if os.path.exists(saveLocation) and not overWriteFiles:
+
+
+            reply_body += "\nSERVER: Error: \"" + saveLocation + "\"" + ' already exists and overwriting is forbidden\n'
+            print("Error: \"" + saveLocation + "\"" + ' already exists and overwriting is forbidden\n')
+            self.wfile.write(reply_body.encode('utf-8'))
             self.send_response(409, 'Conflict')
             self.end_headers()
-            reply_body += "\nSERVER: Error: \"" + saveLocation + "\"" + ' already exists and overwriting is forbidden\n'
-            self.wfile.write(reply_body.encode('utf-8'))
             return
 
         # Try Saving File Without checking directory exists

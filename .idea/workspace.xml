@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f487ce19-f369-4ef1-aa5e-bbb0bbe7388e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ScarletServer.py" beforeDir="false" afterPath="$PROJECT_DIR$/ScarletServer.py" afterDir="false" />
     </list>
@@ -16,10 +17,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ScarletServer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="109">
-              <caret line="110" column="12" lean-forward="true" selection-start-line="110" selection-start-column="12" selection-end-line="110" selection-end-column="16" />
+            <state relative-caret-position="151">
+              <caret line="22" column="10" selection-start-line="22" selection-start-column="10" selection-end-line="22" selection-end-column="10" />
               <folding>
-                <element signature="e#36#94#0" expanded="true" />
+                <element signature="e#83#141#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -76,6 +77,13 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>path</find>
+      <find>Path</find>
+      <find>print</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -96,7 +104,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="432" />
+    <option name="x" value="232" />
+    <option name="y" value="42" />
     <option name="width" value="719" />
     <option name="height" value="900" />
   </component>
@@ -128,6 +137,8 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Python" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -279,12 +290,25 @@
       <option name="project" value="LOCAL" />
       <updated>1581979136879</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added organization on Server Side">
+      <created>1582054823151</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1582054823151</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Updated some file retrieval URL stuff">
+      <created>1582055388266</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1582055388266</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="432" y="0" width="719" height="900" extended-state="0" />
-    <editor active="true" />
+    <frame x="232" y="42" width="719" height="900" extended-state="0" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49815497" weight="0.26647565" />
       <window_info id="Structure" order="1" sideWeight="0.501845" side_tool="true" weight="0.26752505" />
@@ -350,7 +374,9 @@
     <MESSAGE value="Added functionality for all file transfers" />
     <MESSAGE value="Added timestamp" />
     <MESSAGE value="Added functionality to log files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added functionality to log files" />
+    <MESSAGE value="Added organization on Server Side" />
+    <MESSAGE value="Updated some file retrieval URL stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated some file retrieval URL stuff" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/index.html" />
@@ -422,10 +448,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ScarletServer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="109">
-          <caret line="110" column="12" lean-forward="true" selection-start-line="110" selection-start-column="12" selection-end-line="110" selection-end-column="16" />
+        <state relative-caret-position="151">
+          <caret line="22" column="10" selection-start-line="22" selection-start-column="10" selection-end-line="22" selection-end-column="10" />
           <folding>
-            <element signature="e#36#94#0" expanded="true" />
+            <element signature="e#83#141#0" expanded="true" />
           </folding>
         </state>
       </provider>
