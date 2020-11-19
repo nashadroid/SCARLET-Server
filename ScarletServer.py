@@ -189,6 +189,7 @@ class Serv(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(reply_body.encode('utf-8'))
 
-
-httpd = HTTPServer(('192.168.0.9', 8080), Serv)
+with open('ip.txt') as f:
+    ip = f.readline()
+httpd = HTTPServer((ip, 8080), Serv)
 httpd.serve_forever()
