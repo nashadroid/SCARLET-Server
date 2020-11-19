@@ -19,7 +19,6 @@ classdef ScarletClient
 
         function sendTextData(obj, key, val)
             data = ['{"', key , '":"', val ,'"}' ]
-
             body = matlab.net.http.MessageBody(data);
             body.show
             contentTypeField = matlab.net.http.field.ContentTypeField('text/plain'); %'image/jpeg'
