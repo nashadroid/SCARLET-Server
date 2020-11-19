@@ -176,5 +176,5 @@ class Serv(BaseHTTPRequestHandler):
         self.wfile.write(reply_body.encode('utf-8'))
 
 
-httpd = HTTPServer(('', 8080), Serv)
+httpd = HTTPServer(('192.168.0.9', 8080), Serv)
 httpd.serve_forever()

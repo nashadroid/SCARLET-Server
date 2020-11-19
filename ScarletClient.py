@@ -7,15 +7,15 @@ class ScarletClient():
 
     def uploadFile(localFilePath, serverFilePath):
         headers = {'Content-type': 'image/jpeg', 'Slug': serverFilePath}
-        r = requests.put("http://localhost:8080/"+serverFilePath, data=open(localFilePath, 'rb'), headers=headers)
+        r = requests.put("http://192.168.0.9:8080/"+serverFilePath, data=open(localFilePath, 'rb'), headers=headers)
 
     def sendTextData(key, val):
         SendDict = {key:val}
         j = json.dumps(SendDict)
-        requests.post('http://localhost:8080/', data=j)
+        requests.post('http://192.168.0.9:8080/', data=j)
 
     def getTextData(key):
-        return requests.get('http://localhost:8080/'+ key).text
+        return requests.get('http://192.168.0.9:8080/'+ key).text
 
     def getFile(filepath):
-        return requests.get('http://localhost:8080/files/'+ filepath).content
+        return requests.get('http://192.168.0.9:8080/files/'+ filepath).content
