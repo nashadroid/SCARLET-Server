@@ -18,11 +18,10 @@ classdef ScarletClient
         end
 
         function sendTextData(obj, key, val)
-            data = ['{"', key , '":"', val ,'"}' ];
-
+            data = ['{"', key , '":"', val ,'"}' ]
             body = matlab.net.http.MessageBody(data);
             body.show
-            contentTypeField = matlab.net.http.field.ContentTypeField('application/json'); %'image/jpeg'
+            contentTypeField = matlab.net.http.field.ContentTypeField('text/plain'); %'image/jpeg'
             type1 = matlab.net.http.MediaType('text/*');
             type2 = matlab.net.http.MediaType('application/json','q','.5');
             acceptField = matlab.net.http.field.AcceptField([type1 type2]);
