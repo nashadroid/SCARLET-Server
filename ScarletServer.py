@@ -108,9 +108,12 @@ class Serv(BaseHTTPRequestHandler):
 
         try:
             with open("log/"+str(datetime.now().date())+".txt", "a+") as logfile:
-                logfile.write(str(datetime.now().time())+"\t"+str(sentInfoDict))
+                logfile.write("\n"+str(datetime.now().time())+"\t"+str(sentInfoDict))
         except:
-            Path("log/" + str(datetime.now().date())).mkdir(parents=True, exist_ok=True)
+            try:
+                Path("log/").mkdir(parents=True, exist_ok=True)
+            except:
+                print("Failed to make log folder. Check Permissions.")
             try:
                 with open("log/" + str(datetime.now().date()) + ".txt", "a+") as logfile:
                     logfile.write(str(datetime.now().time()) + "\t" + str(sentInfoDict))
@@ -125,8 +128,14 @@ class Serv(BaseHTTPRequestHandler):
 
     def do_PUT(self):
         reply_body = ""
-
-        saveLocation=self.path[1:]
+        try:
+            saveLocation=self.path[1:]
+        except:
+            print("error reading in path of put request")
+            reply_body += '\nerror reading in path of put request'
+            self.send_response(409, 'Conflict')
+            self.end_headers()
+            return
 
         if not saveLocation.startswith("files"):
             saveLocation=os.path.join("files",saveLocation)
@@ -134,8 +143,13 @@ class Serv(BaseHTTPRequestHandler):
             self.send_response(409, 'Added /files to path') # I forget what this does
             reply_body += '\nSERVER: Added /files to path'
 
-
-        file_length = int(self.headers['Content-Length'])
+        try:
+            file_length = int(self.headers['Content-Length'])
+        except:
+            print("ERROR: No Centent-Length Value in header")
+            self.send_response(409, 'Conflict')
+            self.end_headers()
+            return
 
         if sortFilesByDay:
             saveLocation = saveLocation[:6] + str(datetime.now().date()) + "/" + saveLocation[6:]
@@ -147,7 +161,7 @@ class Serv(BaseHTTPRequestHandler):
 
 
             reply_body += "\nSERVER: Error: \"" + saveLocation + "\"" + ' already exists and overwriting is forbidden\n'
-            print("Error: \"" + saveLocation + "\"" + ' already exists and overwriting is forbidden\n')
+            print("ERROR: \"" + saveLocation + "\"" + ' already exists and overwriting is forbidden\n')
             self.wfile.write(reply_body.encode('utf-8'))
             self.send_response(409, 'Conflict')
             self.end_headers()
